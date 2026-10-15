@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>سهرة الشلة</title>
-<meta name="description" content="ألعاب سهرة للشلة على الموبايل: حرب الحروف، سين جيم، سيف المعرفة، ممنوع تقول، وبرا السالفة. كود QR واحد للسهرة كلها.">
+<meta name="description" content="ألعاب سهرة للشلة على الموبايل: حرب الحروف، سين جيم، سيف المعرفة، ممنوع تقول، وبرا السالفة. وبتنضموا من أول الموقع بلا كود.">
 <meta name="theme-color" content="#0D2B24">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta property="og:title" content="سهرة الشلة">
-<meta property="og:description" content="حرب الحروف، سين جيم، سيف المعرفة، ممنوع تقول، وبرا السالفة. امسحوا الكود والعبوا من موبايلاتكن.">
+<meta property="og:description" content="حرب الحروف، سين جيم، سيف المعرفة، ممنوع تقول، وبرا السالفة. افتحوا الموقع وانضموا من موبايلاتكن.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230D2B24'/%3E%3Cpolygon points='32,8 52,20 52,44 32,56 12,44 12,20' fill='%23F0B13C'/%3E%3Cpolygon points='32,20 42,26 42,38 32,44 22,38 22,26' fill='%23C0403A'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="assets/icon-180.png">
 <style>
@@ -786,13 +786,27 @@ textarea.imp{min-height:110px;resize:vertical;line-height:1.7;margin-bottom:10px
 .sword-hero .syrmap.world .rg path{stroke-width:.6}
 .ps-btn.ghosty{background:transparent;border:1px solid rgba(255,255,255,.35);color:var(--card);font-weight:500}
 .ps-btn.ghosty.armed{background:var(--pom);border-color:var(--pom)}
+
+/* ===== open now (home) ===== */
+.open-now{display:flex;flex-direction:column;gap:10px;margin-bottom:18px;padding:14px;border-radius:16px;background:rgba(0,0,0,.22);border:1px solid var(--line-strong)}
+.on-head{display:flex;align-items:center;gap:8px}
+.on-head h2{font-size:1.1rem;font-weight:600;color:var(--card)}
+.on-dot{width:10px;height:10px;border-radius:50%;background:#5BD08A;box-shadow:0 0 0 0 rgba(91,208,138,.6);animation:ondot 1.8s ease-out infinite}
+@keyframes ondot{0%{box-shadow:0 0 0 0 rgba(91,208,138,.55)}70%{box-shadow:0 0 0 9px rgba(91,208,138,0)}100%{box-shadow:0 0 0 0 rgba(91,208,138,0)}}
+.host-row.party{border-color:rgba(240,177,60,.6);background:rgba(240,177,60,.08)}
+.joinbox.open{align-items:stretch;text-align:start;gap:8px}
+.jb-live{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;padding:3px 12px;border-radius:999px;background:#1E6B3F;color:#fff;font-weight:600;font-size:.85rem}
+.jb-live i{width:8px;height:8px;border-radius:50%;background:#7DF0A8;animation:ondot 1.8s ease-out infinite}
+.joinbox.open p{max-width:none}
+.jb-more summary{cursor:pointer;color:var(--ink-soft);font-size:.82rem;text-decoration:underline;text-underline-offset:3px}
+.jb-more .linkrow{margin-top:8px}
+@media (prefers-reduced-motion:reduce){.on-dot,.jb-live i{animation:none}}
 </style>
 </head>
 <body>
 <div id="app" dir="rtl" lang="ar"></div>
 <noscript><p style="color:#ECE5D2;padding:24px">هالموقع بدو JavaScript ليشتغل.</p></noscript>
 <script>window.SAHRA_STANDALONE = true;</script>
-<script src="assets/qrcode.js"></script>
 <script src="assets/mqtt.min.js"></script>
 <script>
 /* SahraNet: a tiny "room" over public MQTT brokers, with the same shape the game
@@ -3007,14 +3021,17 @@ function qrSVG(text){
     return `<svg class="qr" viewBox="-2 -2 ${n+4} ${n+4}" role="img" aria-label="كود QR للانضمام" shape-rendering="crispEdges"><rect x="-2" y="-2" width="${n+4}" height="${n+4}" fill="#ffffff"/><path d="${d}" fill="#141210"/></svg>`;
   }catch(e){ return ''; }
 }
+/* No codes to scan: an open game shows up by itself at the top of everyone's home page.
+   The link is only for friends who aren't in the room yet. */
 function joinBox(token){
-  const url = joinBase() + '#' + token;
-  const qr = qrSVG(url);
-  return `<div class="joinbox">
-    ${qr}
-    <p><b>امسحوا الكود بكاميرا الموبايل</b> ليفتح اللعبة وينضم لحالو. أو ابعتولهن الرابط:</p>
-    <div class="linkrow"><code dir="ltr" id="joinlink">${esc(url)}</code><button data-action="x.copy" data-text="${esc(url)}">نسخ</button></div>
-    <p>${STANDALONE ? 'بس لازم يكون عند الكل إنترنت.' : 'لازم يكونوا مسجلين دخول على Claude وإنت مشاركلهن الصفحة.'}</p>
+  const url = joinBase() + '#' + token, party = /^pa-/.test(token);
+  return `<div class="joinbox open">
+    <span class="jb-live"><i aria-hidden="true"></i>${party ? 'السهرة مفتوحة' : 'اللعبة مفتوحة'}</span>
+    <p><b>رفقاتك بيفتحوا الموقع</b> وبيلاقوا ${party ? 'سهرتك' : 'لعبتك'} بأول الصفحة تحت «مفتوح هلق»، وبيكبسوا «انضم». ما في كود ولا مسح.</p>
+    <details class="jb-more"><summary>رابط مباشر لحدا مو معكن</summary>
+      <div class="linkrow"><code dir="ltr" id="joinlink">${esc(url)}</code><button data-action="x.copy" data-text="${esc(url)}">نسخ</button></div>
+    </details>
+    ${STANDALONE ? '' : '<p>لازم يكونوا مسجلين دخول على Claude وإنت مشاركلهن الصفحة.</p>'}
   </div>`;
 }
 
@@ -3096,10 +3113,11 @@ function homeView(){
     <h1 class="title">سهرة الشلة</h1>
     <p class="lede">ألعاب للقعدة مع الرفقات، وكل لعبة فيها سهل ووسط وصعب. اختاروا لعبة وبلّشوا.</p>
   </header>
+  ${openNowHTML()}
   <button class="party-card" data-action="h.party">
     <span class="pc-k">جديد · للسهرة كلها</span>
     <span class="pc-t">السهرة</span>
-    <span class="pc-d">كود QR واحد لكل الليلة: المضيف بيختار اللعبة، وموبايلات الكل بتلحقو من لعبة للتانية، والنقاط بتنجمع للآخر.</span>
+    <span class="pc-d">واحد بيفتح السهرة، والباقيين بيلاقوها هون فوق وبينضموا. المضيف بيختار اللعبة، وموبايلات الكل بتلحقو من لعبة للتانية، والنقاط بتنجمع للآخر.</span>
     <span class="pc-av" aria-hidden="true">${[0,3,6,9,12].map(i => `<span class="av">${avatarSVG(i)}</span>`).join('')}</span>
   </button>
   <div class="games">
@@ -3472,16 +3490,54 @@ let room = null, roomStatus = 'checking', roomConn = false, roomSlow = false;
 const TERMINAL = ['not_granted','revoked','capability_disabled','capability_removed','transform_error'];
 const CLEAR_PRESENCE = {app:null, role:null, pid:null, nick:null, host:null, a:null, st:null, team:null, acts:null, sess:null};
 function peersList(){ try{ return room ? room.peers() : []; }catch(e){ return []; } }
+/* Open games of one kind. A party's host stays listed as a party (pa) while it plays a game
+   (presence flag pt), and that game isn't listed on its own: you join the party instead. */
 function hostsOf(app, cleaner){
   const m = new Map();
   for(const p of peersList()){
     const pr = p.presence || {};
-    if(pr.app !== app || pr.role !== 'host' || typeof pr.pid !== 'string' || pr.pid === G.pid) continue;
-    const st = cleaner(pr.st); if(!st) continue;
+    if(pr.role !== 'host' || typeof pr.pid !== 'string' || pr.pid === G.pid) continue;
+    let st, playing = '';
+    if(app === 'pa' && pr.app !== 'pa'){
+      if(!pr.pt || !MP_IDS.includes(pr.app)) continue;
+      st = {ph:'lobby', gid:'', lobby:[[pr.pid, clean(pr.nick) || 'مضيف']], sc:{}, nm:{}, last:null, played:[], qn:{}}; playing = pr.app;
+    } else {
+      if(pr.app !== app || (pr.pt && app !== 'pa')) continue;
+      st = cleaner(pr.st); if(!st) continue;
+    }
     const prev = m.get(pr.pid);
-    if(!prev || p.updatedAt > prev.updatedAt) m.set(pr.pid, {pid:pr.pid, nick:clean(pr.nick) || 'مضيف', st, updatedAt:p.updatedAt});
+    if(!prev || p.updatedAt > prev.updatedAt) m.set(pr.pid, {pid:pr.pid, nick:clean(pr.nick) || 'مضيف', st, playing, updatedAt:p.updatedAt});
   }
   return [...m.values()];
+}
+const GAME_NAMES = {sj:'سين جيم', hh:'حرب الحروف', bs:'برا السالفة', mt:'ممنوع تقول', sk:'سيف المعرفة', pa:'السهرة'};
+/* Everything open right now, parties first: shown at the top of the home page. */
+function openHosts(){
+  const out = [], seen = new Set();
+  ['pa', ...MP_IDS].forEach(id => {
+    const d = mpDef(id);
+    hostsOf(id, d.clean).forEach(h => { if(seen.has(h.pid)) return; seen.add(h.pid);
+      out.push(Object.assign({app:id, label: h.playing ? `عم يلعبوا ${GAME_NAMES[h.playing]}` : d.label(h.st)}, h)); });
+  });
+  return out.sort((a, b) => ((b.app === 'pa') - (a.app === 'pa')) || (b.updatedAt - a.updatedAt)).slice(0, 10);
+}
+function openNowHTML(){
+  const conn = roomStatus === 'off' ? '' : roomStatus !== 'ready' || !roomConn ? `<p class="hint">${roomSlow ? 'ما عم يقدر يتصل. تأكدوا من الإنترنت.' : 'عم نتصل لنشوف شو مفتوح…'}</p>` : '';
+  if(roomStatus === 'off') return '';
+  const list = roomStatus === 'ready' ? openHosts() : [];
+  return `<section class="open-now" aria-live="polite">
+    <div class="on-head"><span class="on-dot" aria-hidden="true"></span><h2>مفتوح هلق</h2>${list.length ? `<span class="count">${ar(list.length)}</span>` : ''}</div>
+    ${list.length ? `<ul class="hosts">${list.map(h => `<li class="host-row${h.app === 'pa' ? ' party' : ''}"><span class="hr-who">${avHTML(h.pid, 'sm')}<span><b>${h.app === 'pa' ? 'سهرة' : GAME_NAMES[h.app]} ${esc(h.nick)}</b><small>${esc(h.label)}</small></span></span><button class="mini-btn" data-action="x.join" data-app="${h.app}" data-pid="${esc(h.pid)}">انضم</button></li>`).join('')}</ul>`
+      : conn || `<p class="hint">ما في شي مفتوح هلق. افتح سهرة أو لعبة تحت، ورفقاتك بيشوفوها هون أول ما يفتحوا الموقع.</p>`}
+  </section>`;
+}
+function joinFromHome(app, pid){
+  const d = mpDef(app); if(!d || !pid) return;
+  if(G.q.role || G.h.role || G.bs.role || G.mt.role || G.sk.role || G.pa.role) leaveRoom();
+  G.join = {app, pid}; G.joinTried = false;
+  G.app = d.key; d.vs().view = 'mp'; lastKey = '';
+  render(); tryAutoJoin();
+  if(!G.nick) focusId('nick');
 }
 function hostPeerOf(app, pid, cleaner){
   let best = null;
@@ -3508,7 +3564,7 @@ function playersOf(app, hostPid){
 let presWant = null, presBusy = false, presRetry = null;
 function setPresence(patch){
   if(!room) return;
-  const p = JSON.parse(JSON.stringify(Object.assign({av:G.av}, patch)));
+  const p = JSON.parse(JSON.stringify(Object.assign({av:G.av, pt: G.pa && G.pa.role === 'host' && G.pa.cur ? 1 : null}, patch)));
   presWant = presWant ? Object.assign(presWant, p) : p;
   flushPresence();
 }
@@ -3548,7 +3604,7 @@ function attachRoom(r){
   room = r; roomStatus = 'ready';
   try{ roomConn = r.connected(); }catch(e){ roomConn = false; }
   const onErr = e => { if(e && TERMINAL.includes(e.code)){ roomStatus = 'off'; room = null; } render(); };
-  r.onConnection(cn => { roomConn = cn; if(cn) roomSlow = false; if(G.app !== 'home') render(); if(cn) reassertPresence(); }, onErr);
+  r.onConnection(cn => { roomConn = cn; if(cn) roomSlow = false; render(); if(cn) reassertPresence(); }, onErr);
   r.onPeers(() => onRoomPeers(), onErr);
   setTimeout(() => { if(!roomConn){ roomSlow = true; render(); } }, 12000);
   reassertPresence();
@@ -3579,7 +3635,7 @@ function mpDef(id){
 }
 /* Games a party can move into. */
 const MP_IDS = ['sj','hh','bs','mt','sk'];
-/* In a party, every game's QR code joins the party instead. */
+/* In a party, every game's direct link joins the party instead. */
 const joinTok = id => G.pa.role === 'host' ? 'pa-' + G.pid : id + '-' + G.pid;
 function reassertPresence(){
   const q = G.q, h = G.h, b = G.bs, m = G.mt;
@@ -3620,6 +3676,7 @@ function onRoomPeers(){
   const pa = G.pa;
   if(pa.role === 'player') paFollow();
   if(pa.role === 'host' && pa.P && !pa.cur) paHostPeers();
+  if(G.app === 'home'){ render(); return; }
   if(G.app === 'party' || G.app === 'mine'){ if(!pa.role) tryAutoJoin(); render(); return; }
   if(G.app === 'sword'){ skOnPeers(); return; }
   if(G.app === 'quiz') quizOnPeers();
@@ -3638,15 +3695,15 @@ function joinView(id){
     ${avPicker()}
     <div class="qs">
       <h2>${id === 'pa' ? 'سهرات مفتوحة هلق' : 'ألعاب مفتوحة هلق'}</h2>
-      ${target && !hosts.some(h => h.pid === target) ? '<p class="hint">عم ندوّر عاللعبة اللي مسحت كودها…</p>' : ''}
-      ${ordered.length ? `<ul class="hosts">${ordered.map(h => `<li class="host-row${h.pid === target ? ' target-host' : ''}"><span class="hr-who">${avHTML(h.pid, 'sm')}<span><b>${id === 'pa' ? 'سهرة' : 'لعبة'} ${esc(h.nick)}</b><small>${d.label(h.st)}</small></span></span><button class="mini-btn" data-action="${d.ns}.join" data-pid="${esc(h.pid)}">انضم</button></li>`).join('')}</ul>`
-        : `<p class="empty">${id === 'pa' ? 'ما في سهرة مفتوحة هلق. واحد منكن بيستضيف السهرة، وبيطلعلو كود QR واحد للسهرة كلها.' : 'ما في حدا مستضيف هلق. واحد منكن بيستضيف، وبيطلعلو كود QR بتمسحوه، أو بتطلع لعبتو هون لحالها.'}</p>`}
+      ${target && !hosts.some(h => h.pid === target) ? '<p class="hint">عم ندوّر عاللعبة…</p>' : target && !G.nick ? '<p class="hint">اكتب اسمك فوق وبتفوت لحالك.</p>' : ''}
+      ${ordered.length ? `<ul class="hosts">${ordered.map(h => `<li class="host-row${h.pid === target ? ' target-host' : ''}"><span class="hr-who">${avHTML(h.pid, 'sm')}<span><b>${id === 'pa' ? 'سهرة' : 'لعبة'} ${esc(h.nick)}</b><small>${h.playing ? 'عم يلعبوا ' + GAME_NAMES[h.playing] : d.label(h.st)}</small></span></span><button class="mini-btn" data-action="${d.ns}.join" data-pid="${esc(h.pid)}">انضم</button></li>`).join('')}</ul>`
+        : `<p class="empty">${id === 'pa' ? 'ما في سهرة مفتوحة هلق. واحد منكن بيستضيف السهرة، والباقيين بيلاقوها هون وبأول صفحة الموقع.' : 'ما في حدا مستضيف هلق. واحد منكن بيستضيف، والباقيين بيلاقوا لعبتو هون وبأول صفحة الموقع.'}</p>`}
       ${conn}
     </div>
   </section>
   <div class="dock">${appState.err ? `<p class="err" role="alert">${appState.err}</p>` : ''}${saved ? `<button class="ghost" data-action="q.resume">كمّل اللعبة اللي كنت مستضيفها</button>` : ''}${id === 'pa' && paSaved() ? `<button class="ghost" data-action="p.resume">كمّل السهرة اللي كنت مستضيفها</button>` : ''}<button class="primary" data-action="${d.ns}.host">${id === 'pa' ? 'استضيف سهرة' : 'استضيف لعبة'}</button></div>`;
 }
-/* Auto-join the game whose QR code was scanned, once the host shows up. */
+/* Auto-join the game picked from the home page (or opened from a direct link), once the host shows up. */
 function tryAutoJoin(){
   const j = G.join;
   if(!j || G.joinTried || !room || !G.nick) return;
@@ -4397,7 +4454,7 @@ function qMenu(){
   <div class="modes">
     <button class="mode" data-action="q.mp"${roomStatus === 'off' ? ' disabled' : ''}>
       <span class="mode-head"><span class="mode-title">كل واحد من موبايلو</span>${modeStatus()}</span>
-      <span class="mode-desc">متل كاهوت: واحد بيستضيف وبيطلعلو كود QR، والكل بيمسحو وبيجاوب من موبايلو بنفس الوقت. الأسرع بالجواب الصح بياخد نقاط أكتر.</span>
+      <span class="mode-desc">متل كاهوت: واحد بيستضيف، والباقيين بيلاقوا لعبتو بأول الموقع وبينضموا، وكل واحد بيجاوب من موبايلو بنفس الوقت. الأسرع بالجواب الصح بياخد نقاط أكتر.</span>
       ${roomStatus === 'off' ? OFF_NOTE : ''}
     </button>
     <button class="mode" data-action="q.local">
@@ -5457,7 +5514,7 @@ function hMenu(){
   <div class="modes">
     <button class="mode" data-action="h.mp"${roomStatus === 'off' ? ' disabled' : ''}>
       <span class="mode-head"><span class="mode-title">المضيف وموبايلات الكل</span>${modeStatus()}</span>
-      <span class="mode-desc">المضيف هو الحكم: بيشوف الجواب والتلميح لحالو. الباقيين بيمسحوا كود QR، وكل واحد بيختار حرفو وبيكبس وبيلعب كروتو من موبايلو.</span>
+      <span class="mode-desc">المضيف هو الحكم: بيشوف الجواب والتلميح لحالو. الباقيين بينضموا من أول الموقع، وكل واحد بيختار حرفو وبيكبس وبيلعب كروتو من موبايلو.</span>
       ${roomStatus === 'off' ? OFF_NOTE : ''}
     </button>
     <button class="mode" data-action="h.local">
@@ -5944,7 +6001,7 @@ const T = {
 function salfehMenu(){
   return mpMenu({hero:'<div class="fan" aria-hidden="true"><span class="mini">♠</span><span class="mini odd">؟</span><span class="mini">♠</span></div>', title:'برا السالفة',
     lede:'الكل بيعرف الكلمة إلا واحد. اسألوا بعض واكشفوه قبل ما يعرف عن شو عم تحكوا.', ns:'s',
-    mpDesc:'واحد بيستضيف وبيطلعلو كود QR. كل واحد بيشوف ورقتو على موبايلو، والتصويت سري من الموبايلات، والمضيف بيلعب معكن.',
+    mpDesc:'واحد بيستضيف والباقيين بينضموا من أول الموقع. كل واحد بيشوف ورقتو على موبايلو، والتصويت سري من الموبايلات، والمضيف بيلعب معكن.',
     localTitle:'موبايل واحد بيلف', localDesc:'الموبايل بيلف عالكل، وكل واحد بيشوف ورقتو بدورو.'});
 }
 function tabooMenu(){
@@ -5994,7 +6051,7 @@ function paWaiting(){
   return `<section class="stage">
       <p class="kicker">سهرة ${esc(pa.hostNick || '')}</p>
       <h2 class="big-q">ناطرين المضيف…</h2>
-      <p class="sub">يمكن سكّر موبايلو أو طلع من الصفحة. خلّيك هون، ولما يرجع بتكمّلوا لحالكن، من دون ما تمسحوا الكود.</p>
+      <p class="sub">يمكن سكّر موبايلو أو طلع من الصفحة. خلّيك هون، ولما يرجع بتكمّلوا لحالكن.</p>
     </section>`;
 }
 function paSaved(){ const s = lsGet('sahra-party'); return s && s.P && typeof s.P.scores === 'object' && s.at && Date.now() - s.at < 10*3600*1000 ? s : null; }
@@ -6169,7 +6226,7 @@ function paLobby(st, host, hostName){
     return `<section class="stage top" style="flex:0">
       <div class="play-head"><p class="kicker">إنت المضيف، وبتلعب معهن</p><p class="cat-big">سهرة ${esc(G.nick)}</p></div>
       ${joinBox('pa-' + G.pid)}
-      <div class="qs"><h2>بالسهرة<span class="count">${ar(st.lobby.length)}</span></h2>${roster}${st.lobby.length < 2 ? '<p class="hint">ناطرين حدا يمسح الكود…</p>' : ''}</div>
+      <div class="qs"><h2>بالسهرة<span class="count">${ar(st.lobby.length)}</span></h2>${roster}${st.lobby.length < 2 ? '<p class="hint">ناطرين رفقاتك يفتحوا الموقع وينضموا…</p>' : ''}</div>
       ${paBoard(st)}
     </section>
     <section class="block"><div class="block-head"><h2>اختار اللعبة</h2></div>
@@ -7049,6 +7106,7 @@ $app.addEventListener('click', e => {
   else if(ns === 'k') SK.act(act, el);
   else if(ns === 'y') MY.act(act, el);
   else if(ns === 'x' && act === 'av') setAvatar(+el.dataset.v);
+  else if(ns === 'x' && act === 'join') joinFromHome(el.dataset.app, el.dataset.pid);
   else if(ns === 't') T.act(act, el);
   else if(ns === 'b') BS.act(act, el);
   else if(ns === 'm') MT.act(act, el);
